@@ -7,10 +7,10 @@ namespace CovidMovieMadness___Tenta.Models
     {
         public int ID { get; set; }
         [Required]
-        [StringLength(50), RegularExpression(@"[a-zA-Z0-9]")]
+        [StringLength(50), RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s\w-]*$")]
         public string Name { get; set; }
         [Required]
-        [StringLength(50), RegularExpression(@"[a-zA-Z0-9]")]
+        [StringLength(50), RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s\w-]*$")]
         public string Genre { get; set; }
         [Required]
         [DataType(DataType.DateTime)]

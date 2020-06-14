@@ -6,10 +6,10 @@ namespace CovidMovieMadness___Tenta.Models
     {
         public int ID { get; set; }
         [Required]
-        [StringLength(1000), RegularExpression(@"[A-Z][a-zA-Z0-9]*")]
+        [StringLength(1000), RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s\w-]*$")]
         public string CommentContent { get; set; }
         [Required]
-        [RegularExpression("([0-9]+)")]
+        [Range(0,10)]
         public int UserRating { get; set; }
     }
 }
