@@ -55,7 +55,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                     break;
             }
 
-            int pageSize = 10;
+            int pageSize = 2;
             int pageNumber = (page ?? 1);
             return View(movies.ToPagedList(pageNumber, pageSize));
         }

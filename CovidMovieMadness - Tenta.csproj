@@ -145,6 +145,18 @@
     <Compile Include="Migrations\202006120844596_InitCreate.designer.cs">
       <DependentUpon>202006120844596_InitCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006131526042_DataAnnotations.cs" />
+    <Compile Include="Migrations\202006131526042_DataAnnotations.designer.cs">
+      <DependentUpon>202006131526042_DataAnnotations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006131534418_UpdatedDataAnnotations.cs" />
+    <Compile Include="Migrations\202006131534418_UpdatedDataAnnotations.designer.cs">
+      <DependentUpon>202006131534418_UpdatedDataAnnotations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006131538245_fixedDataTypes.cs" />
+    <Compile Include="Migrations\202006131538245_fixedDataTypes.designer.cs">
+      <DependentUpon>202006131538245_fixedDataTypes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Movie.cs" />
@@ -223,6 +235,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202006120844596_InitCreate.resx">
       <DependentUpon>202006120844596_InitCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006131526042_DataAnnotations.resx">
+      <DependentUpon>202006131526042_DataAnnotations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006131534418_UpdatedDataAnnotations.resx">
+      <DependentUpon>202006131534418_UpdatedDataAnnotations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006131538245_fixedDataTypes.resx">
+      <DependentUpon>202006131538245_fixedDataTypes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

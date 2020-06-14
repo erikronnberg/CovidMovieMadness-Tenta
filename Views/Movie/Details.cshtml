@@ -54,7 +54,8 @@
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("Back to List", "Index")|
-    @if (Model.Post.PostContent == null)
+    FIX NULLREFRENCEEXCEPTION
+    @if (Model.Post.PostContent.IsEmpty() == true)
     {
         @Html.ActionLink("Create post", "Create", "Post", new { id = Model.ID }, null)
     }
