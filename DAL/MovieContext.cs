@@ -15,7 +15,7 @@ namespace CovidMovieMadness___Tenta.DAL
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             modelBuilder.Entity<Movie>()
-                .HasOptional(c => c.Post).WithMany(i => i.Comment);
+                .HasOptional(c => c.Post);
             modelBuilder.Entity<Movie>().MapToStoredProcedures();
         }
     }

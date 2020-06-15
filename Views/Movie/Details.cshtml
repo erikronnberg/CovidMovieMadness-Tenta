@@ -33,39 +33,74 @@
         <dd>
             @Html.DisplayFor(model => model.Year)
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Post.ReviewRating)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Post.ReviewRating)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Post)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Post.PostContent)
-        </dd>
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")|
-    @try
-    {
-        if (Model.Post.PostContent.IsEmpty() == true)
+<div>
+    <h4>Review</h4>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayName("Rating")
+            </th>
+            <td>
+                @Html.DisplayFor(model => model.Post.ReviewRating)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(model => model.Post.PostContent)
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    @{ IEnumerable<CovidMovieMadness___Tenta.Models.Comment> comments = ViewData["Comments"] as IEnumerable<CovidMovieMadness___Tenta.Models.Comment>; }
+    <h4>Comments</h4>
+    <table class="table">
+        <tr>
+            <th>Username</th>
+            <th>Rating</th>
+            <th>Comment</th>
+        </tr>
+        @try
         {
+            foreach (CovidMovieMadness___Tenta.Models.Comment comment in comments)
+            {
+                <tr>
+                    <td>@comment.Username</td>
+                    <td>@comment.UserRating</td>
+                    <td>@comment.CommentContent</td>
+                </tr>
+
+            }
         }
-        else
-        {
-            @Html.ActionLink("Edit post", "Edit", "Post", new { id = Model.ID }, null)
-        }
-    }
-    catch (NullReferenceException)
+        catch (NullReferenceException) { }
+    </table>
+</div>
+
+@try
+{
+    if (Model.Post.PostContent.IsEmpty() == true) { }
+    else
     {
-        @Html.ActionLink("Create post", "Create", "Post", new { id = Model.ID }, null)
+        <p>
+            @Html.ActionLink("Edit movie", "Edit", new { id = Model.ID }) |
+            @Html.ActionLink("Back to List", "Index") |
+            @Html.ActionLink("Edit review", "Edit", "Post", new { id = Model.ID }, null) |
+            @Html.ActionLink("Delete review", "Delete", "Post", new { id = Model.ID }, null) | 
+            @Html.ActionLink("Add comment", "Create", "Comment", new { id = Model.ID }, null)
+
+        </p>
     }
-</p>
+}
+catch (NullReferenceException)
+{
+    <p>
+        @Html.ActionLink("Edit movie", "Edit", new { id = Model.ID }) |
+        @Html.ActionLink("Back to List", "Index") |
+        @Html.ActionLink("Create review", "Create", "Post", new { id = Model.ID }, null)
+    </p>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

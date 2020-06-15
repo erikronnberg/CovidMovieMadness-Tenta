@@ -12,6 +12,9 @@
 <table class="table">
     <tr>
         <th>
+            @Html.DisplayNameFor(model => model.Username)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.CommentContent)
         </th>
         <th>
@@ -22,6 +25,9 @@
 
 @foreach (var item in Model) {
     <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Username)
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.CommentContent)
         </td>

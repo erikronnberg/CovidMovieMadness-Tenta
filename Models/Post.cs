@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CovidMovieMadness___Tenta.Models
 {
     public class Post
     {
+        [ForeignKey("Movie")]
         public int ID { get; set; }
         [Required]
         [Range(0,10)]
@@ -14,6 +16,6 @@ namespace CovidMovieMadness___Tenta.Models
         public string PostContent { get; set; }
 
         public virtual Movie Movie { get; set; }
-        public ICollection<Movie> Comment { get; internal set; }
+        public List<Comment> Comment { get; set; }
     }
 }

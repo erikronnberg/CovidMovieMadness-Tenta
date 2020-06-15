@@ -1,9 +1,13 @@
-﻿using CovidMovieMadness___Tenta.DAL;
-using CovidMovieMadness___Tenta.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
+using CovidMovieMadness___Tenta.DAL;
+using CovidMovieMadness___Tenta.Models;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -43,26 +47,26 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,CommentContent,UserRating")] Comment comment)
+        public ActionResult Create([Bind(Include = "ID,Username,CommentContent,UserRating")] Comment comment, int? ID)
         {
             if (ModelState.IsValid)
             {
                 db.Comment.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Movie", new { id = ID });
             }
 
             return View(comment);
         }
 
         // GET: Comment/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? ID)
         {
-            if (id == null)
+            if (ID == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Comment comment = db.Comment.Find(id);
+            Comment comment = db.Comment.Find(ID);
             if (comment == null)
             {
                 return HttpNotFound();
@@ -75,13 +79,13 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CommentContent,UserRating")] Comment comment)
+        public ActionResult Edit([Bind(Include = "ID,Username,CommentContent,UserRating")] Comment comment, int? ID)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(comment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Movie", new { id = ID });
             }
             return View(comment);
         }
@@ -104,12 +108,12 @@ namespace CovidMovieMadness___Tenta.Controllers
         // POST: Comment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int ID)
         {
-            Comment comment = db.Comment.Find(id);
+            Comment comment = db.Comment.Find(ID);
             db.Comment.Remove(comment);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Movie", new { id = ID });
         }
 
         protected override void Dispose(bool disposing)

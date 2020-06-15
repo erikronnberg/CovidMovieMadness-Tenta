@@ -1,9 +1,14 @@
-﻿using CovidMovieMadness___Tenta.DAL;
-using CovidMovieMadness___Tenta.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
+using CovidMovieMadness___Tenta.DAL;
+using CovidMovieMadness___Tenta.Models;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -14,7 +19,8 @@ namespace CovidMovieMadness___Tenta.Controllers
         // GET: Post
         public ActionResult Index()
         {
-            return View(db.Post.ToList());
+            var post = db.Post.Include(p => p.Movie);
+            return View(post.ToList());
         }
 
         // GET: Post/Details/5
@@ -35,6 +41,7 @@ namespace CovidMovieMadness___Tenta.Controllers
         // GET: Post/Create
         public ActionResult Create()
         {
+            ViewBag.ID = new SelectList(db.Movie, "ID", "Name", db.Movie);
             return View();
         }
 
@@ -43,24 +50,17 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ReviewRating,PostContent")] Post post, int? id)
+        public ActionResult Create([Bind(Include = "ID,ReviewRating,PostContent,Movie")] Post post, int? ID)
         {
             if (ModelState.IsValid)
             {
                 db.Post.Add(post);
-                UpdatePostMovie(id, post);
                 db.SaveChanges();
-                return RedirectToAction("Details", "Movie");
+                return RedirectToAction("Details", "Movie", new { id = ID});
             }
 
+            ViewBag.ID = new SelectList(db.Movie, "ID", "Name", post.ID);
             return View(post);
-        }
-
-        public void UpdatePostMovie(int? id, Post postToUpdate)
-        {
-            Movie movie = db.Movie.Find(id);
-            postToUpdate.Movie = movie;
-            movie.Post = postToUpdate;
         }
 
         // GET: Post/Edit/5
@@ -75,6 +75,7 @@ namespace CovidMovieMadness___Tenta.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.ID = new SelectList(db.Movie, "ID", "Name", post.ID);
             return View(post);
         }
 
@@ -83,14 +84,15 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,ReviewRating,PostContent")] Post post)
+        public ActionResult Edit([Bind(Include = "ID,ReviewRating,PostContent")] Post post, int? ID)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(post).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Movie", new { id = ID });
             }
+            ViewBag.ID = new SelectList(db.Movie, "ID", "Name", post.ID);
             return View(post);
         }
 
@@ -112,12 +114,12 @@ namespace CovidMovieMadness___Tenta.Controllers
         // POST: Post/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int ID)
         {
-            Post post = db.Post.Find(id);
+            Post post = db.Post.Find(ID);
             db.Post.Remove(post);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Movie", new { id = ID });
         }
 
         protected override void Dispose(bool disposing)

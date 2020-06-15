@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using System.Dynamic;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -55,7 +56,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                     break;
             }
 
-            int pageSize = 2;
+            int pageSize = 10;
             int pageNumber = (page ?? 1);
             return View(movies.ToPagedList(pageNumber, pageSize));
         }
@@ -68,6 +69,8 @@ namespace CovidMovieMadness___Tenta.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Movie movie = db.Movie.Find(id);
+            ViewData["Comments"] = db.Comment.ToList();
+
             if (movie == null)
             {
                 return HttpNotFound();
