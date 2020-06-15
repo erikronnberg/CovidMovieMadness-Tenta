@@ -1,6 +1,8 @@
 ﻿using CovidMovieMadness___Tenta.DAL;
+using CovidMovieMadness___Tenta.Migrations;
 using CovidMovieMadness___Tenta.Models;
 using CovidMovieMadness___Tenta.ViewModels;
+using Microsoft.Ajax.Utilities;
 using PagedList;
 using System.Collections.Generic;
 using System.Data;
@@ -83,6 +85,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                     PostContent = post.PostContent,
                     PostRating = post.PostRating,
                     PostTitle = post.PostTitle,
+                    PostDate = post.PostDate,
                     Comment = post.Comment
                 };
                 if (movie == null)
@@ -184,16 +187,25 @@ namespace CovidMovieMadness___Tenta.Controllers
         {
             //It dont be work
             Movie movie = db.Movie.Find(id);
-            Post post = db.Post.Find(movie.Post.ID);
-            List<Comment> comments = db.Comment.Where(i => i.ID == post.ID).ToList();
-            foreach (var item in comments)
+            if (movie.Post != null)
             {
-                db.Comment.Remove(item);
+                Post post = db.Post.Where(i => i.ID == movie.Post.ID)?.SingleOrDefault();
+                List<Comment> comments = db.Comment.Where(i => post.ID == post.ID)?.ToList();
+                foreach (var item in comments)
+                {
+                    db.Comment.Remove(item);
+                }
+                db.Post.Remove(post);
+                db.Movie.Remove(movie);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            } else
+            {
+                db.Movie.Remove(movie);
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
-            db.Post.Remove(post);
-            db.Movie.Remove(movie);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+
         }
 
         protected override void Dispose(bool disposing)

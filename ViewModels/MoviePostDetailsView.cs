@@ -17,6 +17,7 @@ namespace CovidMovieMadness___Tenta.ViewModels
         public int PostRating { get; set; }
         public string PostContent { get; set; }
         public string PostTitle { get; set; }
+        public DateTime PostDate { get; set; }
 
         public virtual List<Comment> Comment { get; set; }
     }

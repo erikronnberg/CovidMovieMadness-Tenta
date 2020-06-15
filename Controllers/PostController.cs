@@ -160,7 +160,7 @@ namespace CovidMovieMadness___Tenta.Controllers
         {
             //It dont be work
             Post post = db.Post.Find(ID);
-            List<Comment> comments = db.Comment.Where(i => i.ID == ID).ToList();
+            List<Comment> comments = db.Comment.Where(i => post.ID == ID).ToList();
             foreach (var item in comments)
             {
                 db.Comment.Remove(item);

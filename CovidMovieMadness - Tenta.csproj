@@ -161,6 +161,10 @@
     <Compile Include="Migrations\202006151645324_postDate.designer.cs">
       <DependentUpon>202006151645324_postDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006152222426_erroMessages.cs" />
+    <Compile Include="Migrations\202006152222426_erroMessages.designer.cs">
+      <DependentUpon>202006152222426_erroMessages.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Movie.cs" />
@@ -249,6 +253,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006151645324_postDate.resx">
       <DependentUpon>202006151645324_postDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006152222426_erroMessages.resx">
+      <DependentUpon>202006152222426_erroMessages.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
