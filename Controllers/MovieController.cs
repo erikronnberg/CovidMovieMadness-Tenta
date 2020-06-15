@@ -82,7 +82,8 @@ namespace CovidMovieMadness___Tenta.Controllers
                     Year = movie.Year,
                     PostID = post.ID,
                     PostContent = post.PostContent,
-                    ReviewRating = post.ReviewRating,
+                    PostRating = post.PostRating,
+                    PostTitle = post.PostTitle,
                     Comment = post.Comment
                 };
                 if (movie == null)

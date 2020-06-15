@@ -10,10 +10,13 @@ namespace CovidMovieMadness___Tenta.Models
         public int ID { get; set; }
         [Required]
         [Range(0, 10)]
-        public int ReviewRating { get; set; }
+        public int PostRating { get; set; }
         [Required]
         [StringLength(1000), RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s\w-]*$")]
         public string PostContent { get; set; }
+        [Required]
+        [StringLength(1000), RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s\w-]*$")]
+        public string PostTitle { get; set; }
 
         public virtual Movie Movie { get; set; }
         public virtual List<Comment> Comment { get; set; }

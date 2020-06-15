@@ -36,14 +36,14 @@
     </dl>
 </div>
 <div>
-    <h4>Review</h4>
+    <h4>@Html.DisplayFor(model => model.PostTitle)</h4>
     <table class="table">
         <tr>
             <th>
                 @Html.DisplayName("Rating")
             </th>
             <td>
-                @Html.DisplayFor(model => model.ReviewRating)
+                @Html.DisplayFor(model => model.PostRating)
             </td>
         </tr>
         <tr>

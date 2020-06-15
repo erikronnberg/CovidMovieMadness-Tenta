@@ -47,7 +47,7 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ReviewRating,PostContent,Movie")] Post post, int? ID)
+        public ActionResult Create([Bind(Include = "ID,PostTitle,PostRating,PostContent,Movie")] Post post, int? ID)
         {
             if (ModelState.IsValid)
             {
@@ -82,7 +82,7 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,ReviewRating,PostContent")] Post post, int? ID)
+        public ActionResult Edit([Bind(Include = "ID,PostTitle,PostRating,PostContent")] Post post, int? ID)
         {
             if (ModelState.IsValid)
             {
