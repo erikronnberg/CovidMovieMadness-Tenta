@@ -1,16 +1,14 @@
 ﻿using CovidMovieMadness___Tenta.DAL;
 using CovidMovieMadness___Tenta.Models;
-using CovidMovieMadness___Tenta.ViewModels;
+using PagedList;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
-using PagedList;
-using System.Data;
-using System.Management.Instrumentation;
-using System;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -24,7 +22,7 @@ namespace CovidMovieMadness___Tenta.Controllers
             ViewBag.CurrentSort = sortOrder;
             ViewBag.TitleSortParm = string.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-            
+
             if (searchString != null)
             {
                 page = 1;
@@ -37,7 +35,7 @@ namespace CovidMovieMadness___Tenta.Controllers
             ViewBag.CurrentFilter = searchString;
 
             var post = from m in db.Post
-                         select m;
+                       select m;
             if (!string.IsNullOrEmpty(searchString))
             {
                 post = post.Where(m => m.PostTitle.Contains(searchString));
@@ -160,6 +158,7 @@ namespace CovidMovieMadness___Tenta.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int ID)
         {
+            //It dont be work
             Post post = db.Post.Find(ID);
             List<Comment> comments = db.Comment.Where(i => i.ID == ID).ToList();
             foreach (var item in comments)
