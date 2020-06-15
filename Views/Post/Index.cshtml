@@ -1,4 +1,5 @@
-﻿@model IEnumerable<CovidMovieMadness___Tenta.Models.Post>
+﻿@model PagedList.IPagedList<CovidMovieMadness___Tenta.Models.Post>
+@using PagedList.Mvc;
 
 @{
     ViewBag.Title = "Index";
@@ -6,24 +7,27 @@
 
 <h2>Reviews</h2>
 
-@*@using (Html.BeginForm("Index", "Movie", FormMethod.Get))
+@using (Html.BeginForm("Index", "Post", FormMethod.Get))
 {
     <p>
         Find by name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
         <input type="submit" value="Search" />
     </p>
-}*@
+}
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Movie.Name)
+            @Html.DisplayName("Movie title")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PostTitle)
+            @Html.ActionLink("Review title", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PostRating)
+            @Html.ActionLink("Date posted", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+        </th>
+        <th>
+            @Html.DisplayName("Rating")
         </th>
         <th></th>
     </tr>
@@ -38,6 +42,9 @@
                 @Html.DisplayFor(modelItem => item.PostTitle)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.PostDate)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.PostRating)
             </td>
             <td>
@@ -49,3 +56,8 @@
     }
 
 </table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

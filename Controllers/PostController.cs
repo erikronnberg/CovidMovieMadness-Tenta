@@ -19,10 +19,50 @@ namespace CovidMovieMadness___Tenta.Controllers
         private MovieContext db = new MovieContext();
 
         // GET: Post
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-            var post = db.Post.Include(p => p.Movie);
-            return View(post.ToList());
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.TitleSortParm = string.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var post = from m in db.Post
+                         select m;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                post = post.Where(m => m.PostTitle.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "title_desc":
+                    post = post.OrderByDescending(s => s.PostTitle);
+                    break;
+                case "Date":
+                    post = post.OrderBy(s => s.PostDate);
+                    break;
+                case "date_desc":
+                    post = post.OrderByDescending(s => s.PostDate);
+                    break;
+                default:
+                    post = post.OrderBy(s => s.ID);
+                    break;
+            }
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            var movie = db.Movie.Include(p => p.Post);
+            return View(post.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Post/Details/5
