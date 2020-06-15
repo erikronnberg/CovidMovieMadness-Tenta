@@ -1,11 +1,16 @@
 ﻿using CovidMovieMadness___Tenta.DAL;
 using CovidMovieMadness___Tenta.Models;
+using CovidMovieMadness___Tenta.ViewModels;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using PagedList;
+using System.Data;
+using System.Management.Instrumentation;
+using System;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -51,6 +56,7 @@ namespace CovidMovieMadness___Tenta.Controllers
         {
             if (ModelState.IsValid)
             {
+                post.PostDate = DateTime.Now;
                 db.Post.Add(post);
                 post.Comment = new List<Comment>();
                 db.SaveChanges();
@@ -115,6 +121,11 @@ namespace CovidMovieMadness___Tenta.Controllers
         public ActionResult DeleteConfirmed(int ID)
         {
             Post post = db.Post.Find(ID);
+            List<Comment> comments = db.Comment.Where(i => i.ID == ID).ToList();
+            foreach (var item in comments)
+            {
+                db.Comment.Remove(item);
+            }
             db.Post.Remove(post);
             db.SaveChanges();
             return RedirectToAction("Details", "Movie", new { id = ID });

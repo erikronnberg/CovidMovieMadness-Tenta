@@ -2,13 +2,17 @@
 using CovidMovieMadness___Tenta.Models;
 using CovidMovieMadness___Tenta.ViewModels;
 using PagedList;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Management.Instrumentation;
 using System.Net;
 using System.Web.Mvc;
+using NLog;
+using System.Data.SqlClient;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -183,9 +187,24 @@ namespace CovidMovieMadness___Tenta.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Movie movie = db.Movie.Find(id);
-            db.Movie.Remove(movie);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            Post post = db.Post.Find(movie.Post.ID);
+            List<Comment> comments = db.Comment.Where(i => i.ID == post.ID).ToList();
+            try
+            {
+                foreach (var item in comments)
+                {
+                    db.Comment.Remove(item);
+                }
+                db.Post.Remove(post);
+                db.Movie.Remove(movie);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            } catch (Exception ex)
+            {
+                //FIX DELETE
+                Console.WriteLine(ex.ToString());
+            }
+            return View(movie);
         }
 
         protected override void Dispose(bool disposing)

@@ -11,20 +11,21 @@
     <h4>Post</h4>
     <hr />
     <dl class="dl-horizontal">
+
         <dt>
-            @Html.DisplayNameFor(model => model.Movie.Name)
+            @Html.DisplayNameFor(model => model.PostTitle)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Movie.Name)
+            @Html.DisplayFor(model => model.PostTitle)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ReviewRating)
+            @Html.DisplayNameFor(model => model.PostRating)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ReviewRating)
+            @Html.DisplayFor(model => model.PostRating)
         </dd>
 
         <dt>
@@ -33,6 +34,14 @@
 
         <dd>
             @Html.DisplayFor(model => model.PostContent)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PostDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PostDate)
         </dd>
 
     </dl>
