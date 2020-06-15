@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CovidMovieMadness___Tenta.DAL;
+using CovidMovieMadness___Tenta.Models;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using CovidMovieMadness___Tenta.DAL;
-using CovidMovieMadness___Tenta.Models;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -47,11 +44,12 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Username,CommentContent,UserRating")] Comment comment, int? ID)
+        public ActionResult Create([Bind(Include = "ID,Username,CommentContent,UserRating,")] Comment comment, int? ID)
         {
             if (ModelState.IsValid)
             {
-                db.Comment.Add(comment);
+                Post post = db.Post.Where(p => p.ID == ID).FirstOrDefault();
+                post.Comment.Add(comment);
                 db.SaveChanges();
                 return RedirectToAction("Details", "Movie", new { id = ID });
             }

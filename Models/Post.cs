@@ -9,13 +9,13 @@ namespace CovidMovieMadness___Tenta.Models
         [ForeignKey("Movie")]
         public int ID { get; set; }
         [Required]
-        [Range(0,10)]
+        [Range(0, 10)]
         public int ReviewRating { get; set; }
         [Required]
         [StringLength(1000), RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s\w-]*$")]
         public string PostContent { get; set; }
 
         public virtual Movie Movie { get; set; }
-        public List<Comment> Comment { get; set; }
+        public virtual List<Comment> Comment { get; set; }
     }
 }

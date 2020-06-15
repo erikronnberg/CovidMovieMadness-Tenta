@@ -1,14 +1,11 @@
-﻿using System;
+﻿using CovidMovieMadness___Tenta.DAL;
+using CovidMovieMadness___Tenta.Models;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
-using CovidMovieMadness___Tenta.DAL;
-using CovidMovieMadness___Tenta.Models;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -55,8 +52,9 @@ namespace CovidMovieMadness___Tenta.Controllers
             if (ModelState.IsValid)
             {
                 db.Post.Add(post);
+                post.Comment = new List<Comment>();
                 db.SaveChanges();
-                return RedirectToAction("Details", "Movie", new { id = ID});
+                return RedirectToAction("Details", "Movie", new { id = ID });
             }
 
             ViewBag.ID = new SelectList(db.Movie, "ID", "Name", post.ID);

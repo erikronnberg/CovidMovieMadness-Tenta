@@ -7,13 +7,13 @@ namespace CovidMovieMadness___Tenta.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class innitCommit : IMigrationMetadata
+    public sealed partial class InitialCommit : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(innitCommit));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCommit));
         
         string IMigrationMetadata.Id
         {
-            get { return "202006151012524_innitCommit"; }
+            get { return "202006151153567_InitialCommit"; }
         }
         
         string IMigrationMetadata.Source

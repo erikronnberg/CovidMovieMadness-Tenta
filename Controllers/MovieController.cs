@@ -1,12 +1,14 @@
 ﻿using CovidMovieMadness___Tenta.DAL;
 using CovidMovieMadness___Tenta.Models;
+using CovidMovieMadness___Tenta.ViewModels;
 using PagedList;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Management.Instrumentation;
 using System.Net;
 using System.Web.Mvc;
-using System.Dynamic;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -69,13 +71,40 @@ namespace CovidMovieMadness___Tenta.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Movie movie = db.Movie.Find(id);
-            ViewData["Comments"] = db.Comment.ToList();
-
-            if (movie == null)
+            Post post = db.Post.Where(i => i.ID == id).FirstOrDefault();
+            if (post != null)
             {
-                return HttpNotFound();
+                MoviePostDetailsView moviePostDetails = new MoviePostDetailsView
+                {
+                    MovieID = movie.ID,
+                    Name = movie.Name,
+                    Genre = movie.Genre,
+                    Year = movie.Year,
+                    PostID = post.ID,
+                    PostContent = post.PostContent,
+                    ReviewRating = post.ReviewRating,
+                    Comment = post.Comment
+                };
+                if (movie == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(moviePostDetails);
+            } else
+            {
+                MoviePostDetailsView movieDetails = new MoviePostDetailsView
+                {
+                    MovieID = movie.ID,
+                    Name = movie.Name,
+                    Genre = movie.Genre,
+                    Year = movie.Year
+                };
+                if (movie == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(movieDetails);
             }
-            return View(movie);
         }
 
         // GET: Movie/Create
