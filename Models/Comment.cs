@@ -14,5 +14,7 @@ namespace CovidMovieMadness___Tenta.Models
         [Required]
         [Range(0, 10)]
         public int UserRating { get; set; }
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

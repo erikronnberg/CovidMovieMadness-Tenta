@@ -2,8 +2,10 @@
 using CovidMovieMadness___Tenta.Models;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace CovidMovieMadness___Tenta.Controllers
@@ -51,7 +53,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                 Post post = db.Post.Where(p => p.ID == ID).FirstOrDefault();
                 post.Comment.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Details", "Movie", new { id = ID });
+                return RedirectToAction("Index", "Movie");
             }
 
             return View(comment);
@@ -77,15 +79,71 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Username,CommentContent,UserRating")] Comment comment, int? ID)
+        public async  Task<ActionResult> Edit(int? ID, byte[] rowVersion)
         {
-            if (ModelState.IsValid)
+            string[] fieldsToBind = new string[] { "ID", "Username", "CommentContent", "UserRating", "RowVersion" };
+            if (ID == null)
             {
-                db.Entry(comment).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Details", "Movie", new { id = ID });
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View(comment);
+            var commentToUpdate = await db.Comment.FindAsync(ID);
+            if (commentToUpdate == null)
+            {
+                Comment deletedComment = new Comment();
+                TryUpdateModel(deletedComment, fieldsToBind);
+                ModelState.AddModelError(string.Empty,
+                    "Unable to save changes. The department was deleted by another user.");
+                return View(deletedComment);
+            }
+            if (TryUpdateModel(commentToUpdate, fieldsToBind))
+            {
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        db.Entry(commentToUpdate).OriginalValues["RowVersion"] = rowVersion;
+                        await db.SaveChangesAsync();
+                        return RedirectToAction("Index", "Movie");
+                    }
+                    return View(commentToUpdate);
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    var entry = ex.Entries.Single();
+                    var clientValues = (Comment)entry.Entity;
+                    var databaseEntry = entry.GetDatabaseValues();
+                    if (databaseEntry == null)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            "Unable to save changes. The department was deleted by another user.");
+                    }
+                    else
+                    {
+                        var databaseValues = (Comment)databaseEntry.ToObject();
+
+                        if (databaseValues.Username != clientValues.Username)
+                            ModelState.AddModelError("Username", "Current value: "
+                                + databaseValues.Username);
+                        if (databaseValues.CommentContent != clientValues.CommentContent)
+                            ModelState.AddModelError("CommentContent", "Current value: "
+                                + string.Format("{0:c}", databaseValues.CommentContent));
+                        if (databaseValues.UserRating != clientValues.UserRating)
+                            ModelState.AddModelError("UserRating", "Current value: "
+                                + string.Format("{0:d}", databaseValues.UserRating));
+                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+                            + "was modified by another user after you got the original value. The "
+                            + "edit operation was canceled. If you still want to edit this record, click "
+                            + "the Save button again. Otherwise click the Back to List hyperlink.");
+                        commentToUpdate.RowVersion = databaseValues.RowVersion;
+                    }
+                }
+                catch (RetryLimitExceededException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+            return View(commentToUpdate);
         }
 
         // GET: Comment/Delete/5
@@ -111,7 +169,7 @@ namespace CovidMovieMadness___Tenta.Controllers
             Comment comment = db.Comment.Find(ID);
             db.Comment.Remove(comment);
             db.SaveChanges();
-            return RedirectToAction("Details", "Movie", new { id = ID });
+            return RedirectToAction("Index", "Movie");
         }
 
         protected override void Dispose(bool disposing)

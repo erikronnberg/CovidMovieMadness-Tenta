@@ -165,6 +165,14 @@
     <Compile Include="Migrations\202006152222426_erroMessages.designer.cs">
       <DependentUpon>202006152222426_erroMessages.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006161421284_addedRowVersion.cs" />
+    <Compile Include="Migrations\202006161421284_addedRowVersion.designer.cs">
+      <DependentUpon>202006161421284_addedRowVersion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006161524192_moreRowVersions.cs" />
+    <Compile Include="Migrations\202006161524192_moreRowVersions.designer.cs">
+      <DependentUpon>202006161524192_moreRowVersions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Movie.cs" />
@@ -259,6 +267,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006152222426_erroMessages.resx">
       <DependentUpon>202006152222426_erroMessages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006161421284_addedRowVersion.resx">
+      <DependentUpon>202006161421284_addedRowVersion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006161524192_moreRowVersions.resx">
+      <DependentUpon>202006161524192_moreRowVersions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

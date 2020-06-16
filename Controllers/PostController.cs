@@ -7,6 +7,8 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using System.Data.Entity.Infrastructure;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
@@ -129,16 +131,77 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,PostTitle,PostRating,PostContent")] Post post, int? ID)
+        public async Task<ActionResult> Edit(int? ID, byte[] rowVersion)
         {
-            if (ModelState.IsValid)
+            string[] fieldsToBind = new string[] { "ID", "PostTitle", "PostRating", "PostContent", "RowVersion" };
+
+            if (ID == null)
             {
-                db.Entry(post).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Details", "Movie", new { id = ID });
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ViewBag.ID = new SelectList(db.Movie, "ID", "Name", post.ID);
-            return View(post);
+
+            var postToUpdate = await db.Post.FindAsync(ID);
+            if (postToUpdate == null)
+            {
+                Post deletedPost = new Post();
+                TryUpdateModel(deletedPost, fieldsToBind);
+                ModelState.AddModelError(string.Empty,
+                    "Unable to save changes. The department was deleted by another user.");
+                ViewBag.ID = new SelectList(db.Movie, "ID", "Name", postToUpdate.ID);
+                return View(deletedPost);
+            }
+
+            if (TryUpdateModel(postToUpdate, fieldsToBind))
+            {
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        db.Entry(postToUpdate).OriginalValues["RowVersion"] = rowVersion;
+                        await db.SaveChangesAsync();
+                        return RedirectToAction("Details", "Movie", new { id = ID });
+                    }
+                    ViewBag.ID = new SelectList(db.Movie, "ID", "Name", postToUpdate.ID);
+                    return View(postToUpdate);
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    var entry = ex.Entries.Single();
+                    var clientValues = (Post)entry.Entity;
+                    var databaseEntry = entry.GetDatabaseValues();
+                    if (databaseEntry == null)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            "Unable to save changes. The department was deleted by another user.");
+                    }
+                    else
+                    {
+                        var databaseValues = (Post)databaseEntry.ToObject();
+
+                        if (databaseValues.PostTitle != clientValues.PostTitle)
+                            ModelState.AddModelError("PostTitle", "Current value: "
+                                + databaseValues.PostTitle);
+                        if (databaseValues.PostContent != clientValues.PostContent)
+                            ModelState.AddModelError("PostContent", "Current value: "
+                                + string.Format("{0:c}", databaseValues.PostContent));
+                        if (databaseValues.PostRating != clientValues.PostRating)
+                            ModelState.AddModelError("PostRating", "Current value: "
+                                + string.Format("{0:d}", databaseValues.PostRating));
+                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+                            + "was modified by another user after you got the original value. The "
+                            + "edit operation was canceled. If you still want to edit this record, click "
+                            + "the Save button again. Otherwise click the Back to List hyperlink.");
+                        postToUpdate.RowVersion = databaseValues.RowVersion;
+                    }
+                }
+                catch (RetryLimitExceededException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+            ViewBag.ID = new SelectList(db.Movie, "ID", "Name", postToUpdate.ID);
+            return View(postToUpdate);
         }
 
         // GET: Post/Delete/5

@@ -22,6 +22,8 @@ namespace CovidMovieMadness___Tenta.Models
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime PostDate { get; set; }
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         public virtual Movie Movie { get; set; }
         public virtual List<Comment> Comment { get; set; }

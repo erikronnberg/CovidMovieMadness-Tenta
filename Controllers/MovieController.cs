@@ -3,11 +3,13 @@ using CovidMovieMadness___Tenta.Models;
 using CovidMovieMadness___Tenta.ViewModels;
 using PagedList;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using System.Threading.Tasks;
 
 namespace CovidMovieMadness___Tenta.Controllers
 {
@@ -80,7 +82,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Movie movie = db.Movie.Find(id);
-            Post post = db.Post.Where(i => i.ID == id).FirstOrDefault();
+            Post post = db.Post.Where(i => i.Movie.ID == id).FirstOrDefault();
             if (post != null)
             {
                 MoviePostDetailsView moviePostDetails = new MoviePostDetailsView
@@ -162,15 +164,71 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,Genre,Year")] Movie movie)
+        public async Task<ActionResult> Edit(int? ID, byte[] rowVersion)
         {
-            if (ModelState.IsValid)
+            string[] fieldsToBind = new string[] { "ID", "Name", "Genre", "Year", "RowVersion" };
+            if (ID == null)
             {
-                db.Entry(movie).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View(movie);
+            var movieToUpdate = await db.Movie.FindAsync(ID);
+            if (movieToUpdate == null)
+            {
+                Movie deletedMovie = new Movie();
+                TryUpdateModel(deletedMovie, fieldsToBind);
+                ModelState.AddModelError(string.Empty,
+                    "Unable to save changes. The department was deleted by another user.");
+                return View(deletedMovie);
+            }
+            if (TryUpdateModel(movieToUpdate, fieldsToBind))
+            {
+                try
+                {
+                    db.Entry(movieToUpdate).OriginalValues["RowVersion"] = rowVersion;
+                    await db.SaveChangesAsync();
+
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    var entry = ex.Entries.Single();
+                    var clientValues = (Movie)entry.Entity;
+                    var databaseEntry = entry.GetDatabaseValues();
+                    if (databaseEntry == null)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            "Unable to save changes. The department was deleted by another user.");
+                    }
+                    else
+                    {
+                        var databaseValues = (Movie)databaseEntry.ToObject();
+
+                        if (databaseValues.Name != clientValues.Name)
+                            ModelState.AddModelError("Name", "Current value: "
+                                + databaseValues.Name);
+                        if (databaseValues.Name != clientValues.Name)
+                            ModelState.AddModelError("Name", "Current value: "
+                                + string.Format("{0:c}", databaseValues.Name));
+                        if (databaseValues.Genre != clientValues.Genre)
+                            ModelState.AddModelError("Genre", "Current value: "
+                                + string.Format("{0:d}", databaseValues.Genre));
+                        if (databaseValues.Year != clientValues.Year)
+                            ModelState.AddModelError("Year", "Current value: "
+                                + string.Format("{0:d}", databaseValues.Year));
+                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+                            + "was modified by another user after you got the original value. The "
+                            + "edit operation was canceled. If you still want to edit this record, click "
+                            + "the Save button again. Otherwise click the Back to List hyperlink.");
+                        movieToUpdate.RowVersion = databaseValues.RowVersion;
+                    }
+                }
+                catch (RetryLimitExceededException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+            return View(movieToUpdate);
         }
 
         // GET: Movie/Delete/5
@@ -191,19 +249,17 @@ namespace CovidMovieMadness___Tenta.Controllers
         // POST: Movie/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int? id)
         {
-            //It dont be work
             Movie movie = db.Movie.Find(id);
             if (movie.Post != null)
             {
-                Post post = db.Post.Where(i => i.ID == movie.Post.ID)?.SingleOrDefault();
-                List<Comment> comments = post.Comment.ToList();
+                List<Comment> comments = movie.Post.Comment.ToList();
                 foreach (var item in comments)
                 {
                     db.Comment.Remove(item);
                 }
-                db.Post.Remove(post);
+                db.Post.Remove(movie.Post);
                 db.Movie.Remove(movie);
                 db.SaveChanges();
                 return RedirectToAction("Index");
