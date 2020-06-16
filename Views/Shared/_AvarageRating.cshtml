@@ -1,0 +1,10 @@
+﻿@model IEnumerable<CovidMovieMadness___Tenta.Models.Comment>
+@{ int totalRating = 0;}
+@foreach (var item in Model)
+{
+    totalRating += item.UserRating; 
+}
+@{ int averageRating = totalRating / Model.Count();}
+    <p>
+        @Html.DisplayName("Avrage user rating: " + averageRating.ToString())
+    </p>

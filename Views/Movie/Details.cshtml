@@ -76,15 +76,26 @@
                     <td>@item.Username</td>
                     <td>@item.UserRating</td>
                     <td>@item.CommentContent</td>
-                    <td>@Html.ActionLink("Edit comment", "Edit", "Comment", new { id = item.ID }, null) |
-                    @Html.ActionLink("Delete comment", "Delete", "Comment", new { id = item.ID }, null) </td>
+                    <td>
+                        @Html.ActionLink("Edit comment", "Edit", "Comment", new { id = item.ID }, null) |
+                        @Html.ActionLink("Delete comment", "Delete", "Comment", new { id = item.ID }, null)
+                    </td>
                 </tr>
 
             }
         }
     </table>
 </div>
-
+<br />
+@Ajax.ActionLink("Average Rating", "AllRatings",
+    new AjaxOptions
+    {
+      HttpMethod = "GET", // HttpMethod to use, GET or POST
+      UpdateTargetId = "ratings", // ID of the HTML element to update
+      InsertionMode = InsertionMode.Replace // Replace the existing contents
+    })
+<div id="ratings"></div>
+<br />
 @try
 {
     if (string.IsNullOrEmpty(Model.PostContent))
@@ -113,4 +124,6 @@ catch (NullReferenceException) { }
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/jquery-3.4.1.min.js")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
 }

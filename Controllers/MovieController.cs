@@ -15,6 +15,13 @@ namespace CovidMovieMadness___Tenta.Controllers
     {
         private MovieContext db = new MovieContext();
 
+        public PartialViewResult AllRatings(int? ID)
+        {
+            Post post = db.Post.Where(i => i.ID == i.Movie.ID).FirstOrDefault();
+            List<Comment> comments = post.Comment;
+            return PartialView("_AvarageRating", comments);
+        }
+
         // GET: Movie
         public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
