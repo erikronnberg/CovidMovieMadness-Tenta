@@ -1,8 +1,6 @@
 ﻿using CovidMovieMadness___Tenta.DAL;
-using CovidMovieMadness___Tenta.Migrations;
 using CovidMovieMadness___Tenta.Models;
 using CovidMovieMadness___Tenta.ViewModels;
-using Microsoft.Ajax.Utilities;
 using PagedList;
 using System.Collections.Generic;
 using System.Data;
@@ -199,13 +197,13 @@ namespace CovidMovieMadness___Tenta.Controllers
                 db.Movie.Remove(movie);
                 db.SaveChanges();
                 return RedirectToAction("Index");
-            } else
+            }
+            else
             {
                 db.Movie.Remove(movie);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
         }
 
         protected override void Dispose(bool disposing)
