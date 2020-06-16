@@ -1,0 +1,58 @@
+﻿@model CovidMovieMadness___Tenta.ViewModels.MoviePostDetailsView
+@if (!string.IsNullOrEmpty(Model.PostContent))
+{
+    <div>
+        <h4>@Html.DisplayFor(model => model.PostTitle)</h4>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayName("Rating")
+                </th>
+                <th>
+                    @Html.DisplayName("Date posted")
+                </th>
+                <th>
+                    @Html.DisplayName("Edit")
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => model.PostRating)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.PostDate)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit review", "Edit", "Post", new { id = Model.PostID }, null) |
+                    @Html.ActionLink("Delete review", "Delete", "Post", new { id = Model.PostID }, null)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => model.PostContent)
+                </td>
+            </tr>
+        </table>
+    </div>
+    if (Model.Comment.Count != 0)
+    {
+        @Ajax.ActionLink("Show Comment", "PartialComment", new { id = Model.PostID },
+        new AjaxOptions
+        {
+            HttpMethod = "GET", // HttpMethod to use, GET or POST
+            UpdateTargetId = "comment", // ID of the HTML element to update
+            InsertionMode = InsertionMode.Replace // Replace the existing contents
+        }, new { htmlAttributes = new { @data_toggle = "comment" } })
+    }
+    <br />
+    <br />
+    <p>@Html.ActionLink("Add comment", "Create", "Comment", new { id = Model.PostID }, null)</p>
+    <div id="comment">
+    </div>
+}
+else if (Model != null)
+{
+    <p>
+        @Html.ActionLink("Create review", "Create", "Post", new { id = Model.MovieID }, new { id = Model.MovieID })
+    </p>
+}

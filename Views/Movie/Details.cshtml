@@ -35,56 +35,14 @@
         </dd>
     </dl>
 </div>
-<div>
-    <h4>@Html.DisplayFor(model => model.PostTitle)</h4>
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayName("Rating")
-            </th>
-            <td>
-                @Html.DisplayFor(model => model.PostRating)
-            </td>
-            <th>
-                @Html.DisplayName("Date posted")
-            </th>
-            <td>
-                @Html.DisplayFor(model => model.PostDate)
-            </td>
-        </tr>
-        <tr>
-            <td>
-                @Html.DisplayFor(model => model.PostContent)
-            </td>
-        </tr>
-    </table>
-</div>
-<div>
-    <h4>Comments</h4>
-    <table class="table">
-        <tr>
-            <th>Username</th>
-            <th>Rating</th>
-            <th>Comment</th>
-            <th>Edit</th>
-        </tr>
-        @if (!string.IsNullOrEmpty(Model.PostContent))
-        {
-            foreach (var item in Model.Comment)
-            {
-                <tr>
-                    <td>@item.Username</td>
-                    <td>@item.UserRating</td>
-                    <td>@item.CommentContent</td>
-                    <td>
-                        @Html.ActionLink("Edit comment", "Edit", "Comment", new { id = item.ID }, null) |
-                        @Html.ActionLink("Delete comment", "Delete", "Comment", new { id = item.ID }, null)
-                    </td>
-                </tr>
-
-            }
-        }
-    </table>
+@Ajax.ActionLink("Show review", "PartialPost", new { id = Model.MovieID },
+    new AjaxOptions
+    {
+        HttpMethod = "GET", // HttpMethod to use, GET or POST
+        UpdateTargetId = "post", // ID of the HTML element to update
+        InsertionMode = InsertionMode.Replace // Replace the existing contents
+    }, new { id = Model.MovieID })
+<div id="post">
 </div>
 <br />
 @Ajax.ActionLink("Average Rating", "AllRatings",
@@ -96,31 +54,11 @@
     })
 <div id="ratings"></div>
 <br />
-@try
-{
-    if (string.IsNullOrEmpty(Model.PostContent))
-    {
-        <p>
-            @Html.ActionLink("Edit movie", "Edit", new { id = Model.MovieID }) |
-            @Html.ActionLink("Delete movie", "Delete", new { id = Model.MovieID }) |
-            @Html.ActionLink("Back to List", "Index") |
-            @Html.ActionLink("Create review", "Create", "Post", new { id = Model.PostID }, null)
-        </p>
-    }
-    else
-    {
-        <p>
-            @Html.ActionLink("Edit movie", "Edit", new { id = Model.MovieID }) |
-            @Html.ActionLink("Delete movie", "Delete", new { id = Model.MovieID }) |
-            @Html.ActionLink("Back to List", "Index") |
-            @Html.ActionLink("Edit review", "Edit", "Post", new { id = Model.PostID }, null) |
-            @Html.ActionLink("Delete review", "Delete", "Post", new { id = Model.PostID }, null) |
-            @Html.ActionLink("Add comment", "Create", "Comment", new { id = Model.PostID }, null)
-
-        </p>
-    }
-}
-catch (NullReferenceException) { }
+<p>
+    @Html.ActionLink("Edit movie", "Edit", new { id = Model.MovieID }) |
+    @Html.ActionLink("Delete movie", "Delete", new { id = Model.MovieID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

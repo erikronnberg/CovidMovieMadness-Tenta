@@ -1,0 +1,26 @@
+﻿@model CovidMovieMadness___Tenta.ViewModels.MoviePostDetailsView
+
+<div>
+    <h4>Comments</h4>
+    <table class="table">
+        <tr>
+            <th>Username</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Edit</th>
+        </tr>
+        @foreach (var item in Model.Comment)
+        {
+        <tr>
+            <td>@item.Username</td>
+            <td>@item.UserRating</td>
+            <td>@item.CommentContent</td>
+            <td>
+                @Html.ActionLink("Edit comment", "Edit", "Comment", new { id = item.ID }, null) |
+                @Html.ActionLink("Delete comment", "Delete", "Comment", new { id = item.ID }, null)
+            </td>
+        </tr>
+
+        }
+    </table>
+</div>

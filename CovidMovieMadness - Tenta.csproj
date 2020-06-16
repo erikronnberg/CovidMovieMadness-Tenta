@@ -238,6 +238,8 @@
     <Content Include="Views\Post\Create.cshtml" />
     <Content Include="Views\Post\Edit.cshtml" />
     <Content Include="Views\Shared\_AvarageRating.cshtml" />
+    <Content Include="Views\Shared\_PartialPost.cshtml" />
+    <Content Include="Views\Shared\_PartialComment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

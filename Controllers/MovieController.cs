@@ -17,11 +17,49 @@ namespace CovidMovieMadness___Tenta.Controllers
     {
         private MovieContext db = new MovieContext();
 
-        public PartialViewResult AllRatings(int? ID)
+        public PartialViewResult AllRatings()
         {
             Post post = db.Post.Where(i => i.ID == i.Movie.ID).FirstOrDefault();
             List<Comment> comments = post.Comment;
             return PartialView("_AvarageRating", comments);
+        }
+
+        public PartialViewResult PartialPost(int? ID)
+        {
+            Post post = db.Post.Where(i => i.Movie.ID == ID).FirstOrDefault();
+            if (post != null)
+            {
+                MoviePostDetailsView moviePostDetails = new MoviePostDetailsView
+                {
+                    MovieID = ID.Value,
+                    PostID = post.ID,
+                    PostContent = post.PostContent,
+                    PostRating = post.PostRating,
+                    PostTitle = post.PostTitle,
+                    PostDate = post.PostDate,
+                    Comment = post.Comment
+                };
+                return PartialView("_PartialPost", moviePostDetails);
+            }
+            else
+            {
+                MoviePostDetailsView moviePostDetails = new MoviePostDetailsView
+                {
+                    MovieID = ID.Value
+                };
+                return PartialView("_PartialPost", moviePostDetails);
+            }
+        }
+
+        public PartialViewResult PartialComment(int? ID)
+        {
+            Post post = db.Post.Find(ID);
+            List<Comment> comments = post.Comment.ToList();
+            MoviePostDetailsView commentDetailsView = new MoviePostDetailsView
+            {
+                Comment = comments
+            };
+            return PartialView("_PartialComment", commentDetailsView);
         }
 
         // GET: Movie
@@ -82,43 +120,18 @@ namespace CovidMovieMadness___Tenta.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Movie movie = db.Movie.Find(id);
-            Post post = db.Post.Where(i => i.Movie.ID == id).FirstOrDefault();
-            if (post != null)
+            MoviePostDetailsView movieDetails = new MoviePostDetailsView
             {
-                MoviePostDetailsView moviePostDetails = new MoviePostDetailsView
-                {
-                    MovieID = movie.ID,
-                    Name = movie.Name,
-                    Genre = movie.Genre,
-                    Year = movie.Year,
-                    PostID = post.ID,
-                    PostContent = post.PostContent,
-                    PostRating = post.PostRating,
-                    PostTitle = post.PostTitle,
-                    PostDate = post.PostDate,
-                    Comment = post.Comment
-                };
-                if (movie == null)
-                {
-                    return HttpNotFound();
-                }
-                return View(moviePostDetails);
-            }
-            else
+                MovieID = movie.ID,
+                Name = movie.Name,
+                Genre = movie.Genre,
+                Year = movie.Year
+            };
+            if (movie == null)
             {
-                MoviePostDetailsView movieDetails = new MoviePostDetailsView
-                {
-                    MovieID = movie.ID,
-                    Name = movie.Name,
-                    Genre = movie.Genre,
-                    Year = movie.Year
-                };
-                if (movie == null)
-                {
-                    return HttpNotFound();
-                }
-                return View(movieDetails);
+                return HttpNotFound();
             }
+            return View(movieDetails);
         }
 
         // GET: Movie/Create

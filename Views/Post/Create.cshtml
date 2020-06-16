@@ -24,17 +24,9 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ID, "Movie", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
             @Html.LabelFor(model => model.PostRating, "Rating", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.PostRating, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.PostRating, new { htmlAttributes = new { @class = "form-control"} })
                 @Html.ValidationMessageFor(model => model.PostRating, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -56,7 +48,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Details", "Movie", new { id = Model.Movie.ID }, null)
+    @Html.ActionLink("Back to List", "Index", "Movie")
 </div>
 
 @section Scripts {
