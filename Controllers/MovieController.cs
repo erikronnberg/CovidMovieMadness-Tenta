@@ -19,8 +19,8 @@ namespace CovidMovieMadness___Tenta.Controllers
         public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.NameSortParm = sortOrder == "name_asc" ? "name_desc" : "name_asc";
+            ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
 
             if (searchString != null)
             {
@@ -43,10 +43,13 @@ namespace CovidMovieMadness___Tenta.Controllers
 
             switch (sortOrder)
             {
+                case "name_asc":
+                    movies = movies.OrderBy(s => s.Name);
+                    break;
                 case "name_desc":
                     movies = movies.OrderByDescending(s => s.Name);
                     break;
-                case "Date":
+                case "date_asc":
                     movies = movies.OrderBy(s => s.Year);
                     break;
                 case "date_desc":
@@ -188,7 +191,7 @@ namespace CovidMovieMadness___Tenta.Controllers
             if (movie.Post != null)
             {
                 Post post = db.Post.Where(i => i.ID == movie.Post.ID)?.SingleOrDefault();
-                List<Comment> comments = db.Comment.Where(i => post.ID == post.ID)?.ToList();
+                List<Comment> comments = post.Comment.ToList();
                 foreach (var item in comments)
                 {
                     db.Comment.Remove(item);
