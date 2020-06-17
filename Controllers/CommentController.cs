@@ -53,7 +53,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                 Post post = db.Post.Where(p => p.ID == ID).FirstOrDefault();
                 post.Comment.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Index", "Movie");
+                return RedirectToAction("Details", "Movie", new { id = post.Movie.ID });
             }
 
             return View(comment);
@@ -79,7 +79,7 @@ namespace CovidMovieMadness___Tenta.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async  Task<ActionResult> Edit(int? ID, byte[] rowVersion)
+        public async  Task<ActionResult> Edit(int? ID, byte[] rowVersion, int? postID)
         {
             string[] fieldsToBind = new string[] { "ID", "Username", "CommentContent", "UserRating", "RowVersion" };
             if (ID == null)
@@ -92,7 +92,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                 Comment deletedComment = new Comment();
                 TryUpdateModel(deletedComment, fieldsToBind);
                 ModelState.AddModelError(string.Empty,
-                    "Unable to save changes. The department was deleted by another user.");
+                    "Unable to save changes. The comment was deleted by another user.");
                 return View(deletedComment);
             }
             if (TryUpdateModel(commentToUpdate, fieldsToBind))
@@ -103,7 +103,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                     {
                         db.Entry(commentToUpdate).OriginalValues["RowVersion"] = rowVersion;
                         await db.SaveChangesAsync();
-                        return RedirectToAction("Index", "Movie");
+                        return RedirectToAction("Details", "Movie", new { id = postID});
                     }
                     return View(commentToUpdate);
                 }
@@ -115,7 +115,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                     if (databaseEntry == null)
                     {
                         ModelState.AddModelError(string.Empty,
-                            "Unable to save changes. The department was deleted by another user.");
+                            "Unable to save changes. The comment was deleted by another user.");
                     }
                     else
                     {
@@ -164,12 +164,12 @@ namespace CovidMovieMadness___Tenta.Controllers
         // POST: Comment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int ID)
+        public ActionResult DeleteConfirmed(int ID, int? postID)
         {
             Comment comment = db.Comment.Find(ID);
             db.Comment.Remove(comment);
             db.SaveChanges();
-            return RedirectToAction("Index", "Movie");
+            return RedirectToAction("Details", "Movie", new { id = postID });
         }
 
         protected override void Dispose(bool disposing)

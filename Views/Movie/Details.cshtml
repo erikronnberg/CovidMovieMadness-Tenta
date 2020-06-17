@@ -45,13 +45,13 @@
 <div id="post">
 </div>
 <br />
-@Ajax.ActionLink("Average Rating", "AllRatings",
+@Ajax.ActionLink("Average Rating", "AllRatings", new { id = Model.MovieID },
     new AjaxOptions
     {
       HttpMethod = "GET", // HttpMethod to use, GET or POST
       UpdateTargetId = "ratings", // ID of the HTML element to update
       InsertionMode = InsertionMode.Replace // Replace the existing contents
-    })
+    }, new { id = Model.MovieID })
 <div id="ratings"></div>
 <br />
 <p>

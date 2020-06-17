@@ -58,7 +58,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                     post = post.OrderByDescending(s => s.PostDate);
                     break;
                 default:
-                    post = post.OrderBy(s => s.ID);
+                    post = post.OrderByDescending(s => s.PostDate);
                     break;
             }
 
@@ -99,14 +99,18 @@ namespace CovidMovieMadness___Tenta.Controllers
         {
             if (ModelState.IsValid)
             {
-                post.PostDate = DateTime.Now;
-                db.Post.Add(post);
-                post.Comment = new List<Comment>();
-                db.SaveChanges();
-                return RedirectToAction("Details", "Movie", new { id = ID });
-            }
+                try
+                {
+                    post.PostDate = DateTime.Now;
+                    db.Post.Add(post);
+                    post.Comment = new List<Comment>();
+                    db.SaveChanges();
+                    return RedirectToAction("Details", "Movie", new { id = ID });
+                } catch
+                {
 
-            ViewBag.ID = new SelectList(db.Movie, "ID", "Name", post.ID);
+                }
+            }
             return View(post);
         }
 
@@ -122,7 +126,6 @@ namespace CovidMovieMadness___Tenta.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ID = new SelectList(db.Movie, "ID", "Name", post.ID);
             return View(post);
         }
 
@@ -146,7 +149,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                 Post deletedPost = new Post();
                 TryUpdateModel(deletedPost, fieldsToBind);
                 ModelState.AddModelError(string.Empty,
-                    "Unable to save changes. The department was deleted by another user.");
+                    "Unable to save changes. The post was deleted by another user.");
                 ViewBag.ID = new SelectList(db.Movie, "ID", "Name", postToUpdate.ID);
                 return View(deletedPost);
             }
@@ -172,7 +175,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                     if (databaseEntry == null)
                     {
                         ModelState.AddModelError(string.Empty,
-                            "Unable to save changes. The department was deleted by another user.");
+                            "Unable to save changes. The post was deleted by another user.");
                     }
                     else
                     {

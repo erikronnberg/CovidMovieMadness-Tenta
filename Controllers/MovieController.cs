@@ -17,9 +17,9 @@ namespace CovidMovieMadness___Tenta.Controllers
     {
         private MovieContext db = new MovieContext();
 
-        public PartialViewResult AllRatings()
+        public PartialViewResult AllRatings(int? id)
         {
-            Post post = db.Post.Where(i => i.ID == i.Movie.ID).FirstOrDefault();
+            Post post = db.Post.Where(i => i.Movie.ID == id).FirstOrDefault();
             List<Comment> comments = post.Comment;
             return PartialView("_AvarageRating", comments);
         }
@@ -43,11 +43,11 @@ namespace CovidMovieMadness___Tenta.Controllers
             }
             else
             {
-                MoviePostDetailsView moviePostDetails = new MoviePostDetailsView
+                MoviePostDetailsView PostDetails = new MoviePostDetailsView
                 {
                     MovieID = ID.Value
                 };
-                return PartialView("_PartialPost", moviePostDetails);
+                return PartialView("_PartialPost", PostDetails);
             }
         }
 
@@ -57,6 +57,8 @@ namespace CovidMovieMadness___Tenta.Controllers
             List<Comment> comments = post.Comment.ToList();
             MoviePostDetailsView commentDetailsView = new MoviePostDetailsView
             {
+
+                PostID = post.ID,
                 Comment = comments
             };
             return PartialView("_PartialComment", commentDetailsView);
@@ -190,7 +192,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                 Movie deletedMovie = new Movie();
                 TryUpdateModel(deletedMovie, fieldsToBind);
                 ModelState.AddModelError(string.Empty,
-                    "Unable to save changes. The department was deleted by another user.");
+                    "Unable to save changes. The movie was deleted by another user.");
                 return View(deletedMovie);
             }
             if (TryUpdateModel(movieToUpdate, fieldsToBind))
@@ -210,7 +212,7 @@ namespace CovidMovieMadness___Tenta.Controllers
                     if (databaseEntry == null)
                     {
                         ModelState.AddModelError(string.Empty,
-                            "Unable to save changes. The department was deleted by another user.");
+                            "Unable to save changes. The movie was deleted by another user.");
                     }
                     else
                     {

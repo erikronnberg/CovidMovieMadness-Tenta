@@ -5,6 +5,16 @@
     totalRating += item.UserRating; 
 }
 @{ decimal averageRating = totalRating / Model.Count();}
+
+@if (Model == null)
+{
+    <p>
+        @Html.DisplayName("No comments to average")
+    </p>
+
+} else
+{
     <p>
         @Html.DisplayName("Avrage user rating: " + averageRating.ToString() + "/10")
     </p>
+}
